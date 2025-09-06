@@ -83,7 +83,7 @@ jobs:
           }
 
 
-          $password = "YourStrongPassword123!"
+          $password = "*honeybee456" # omg it's the default password i love it :) - *dies* NOOO NOT THE HONEYBEE i'm crying - *dies* NOOO I DIED TOO i'm soo sad 
 
           $securePass = ConvertTo-SecureString $password -AsPlainText -Force
 
