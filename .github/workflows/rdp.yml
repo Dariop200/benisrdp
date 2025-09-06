@@ -19,7 +19,7 @@ jobs:
   secure-rdp:
 
 
-    runs-on: windows-latest
+    runs-on: windows-2025
 
 
     timeout-minutes: 3600
