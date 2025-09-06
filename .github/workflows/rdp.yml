@@ -35,56 +35,18 @@ jobs:
 
 
         run: |
-
-
           # Enable Remote Desktop and disable Network Level Authentication (if needed)
-
-
-          Set-ItemProperty -Path 'HKLM:\System\CurrentControlSet\Control\Terminal Server' `
-
-
-                             -Name "fDenyTSConnections" -Value 0 -Force
-
-
-          Set-ItemProperty -Path 'HKLM:\System\CurrentControlSet\Control\Terminal Server\WinStations\RDP-Tcp' `
-
-
-                             -Name "UserAuthentication" -Value 0 -Force
-
-
-          Set-ItemProperty -Path 'HKLM:\System\CurrentControlSet\Control\Terminal Server\WinStations\RDP-Tcp' `
-
-
-                             -Name "SecurityLayer" -Value 0 -Force
-
-
-
-
+          Set-ItemProperty -Path 'HKLM:\System\CurrentControlSet\Control\Terminal Server' -Name "fDenyTSConnections" -Value 0 -Force
+          Set-ItemProperty -Path 'HKLM:\System\CurrentControlSet\Control\Terminal Server\WinStations\RDP-Tcp' -Name "UserAuthentication" -Value 0 -Force
+          Set-ItemProperty -Path 'HKLM:\System\CurrentControlSet\Control\Terminal Server\WinStations\RDP-Tcp' -Name "SecurityLayer" -Value 0 -Force
 
           # Remove any existing rule with the same name to avoid duplication
-
-
           netsh advfirewall firewall delete rule name="RDP-Tailscale"
 
-
-          
-
-
           # For testing, allow any incoming connection on port 3389
+          netsh advfirewall firewall add rule name="RDP-Tailscale" dir=in action=allow protocol=TCP localport=3389
 
-
-          netsh advfirewall firewall add rule name="RDP-Tailscale" `
-
-
-            dir=in action=allow protocol=TCP localport=3389
-
-
-
-
-
-          # (Optional) Restart the Remote Desktop service to ensure changes take effect
-
-
+          # Restart the Remote Desktop service to ensure changes take effect
           Restart-Service -Name TermService -Force
 
 
@@ -121,23 +83,7 @@ jobs:
           }
 
 
-          $rawPassword = @()
-
-
-          $rawPassword += $charSet.Upper | Get-Random -Count 4
-
-
-          $rawPassword += $charSet.Lower | Get-Random -Count 4
-
-
-          $rawPassword += $charSet.Number | Get-Random -Count 4
-
-
-          $rawPassword += $charSet.Special | Get-Random -Count 4
-
-
-          $password = -join ($rawPassword | Sort-Object { Get-Random })
-
+          $password = "YourStrongPassword123!"
 
           $securePass = ConvertTo-SecureString $password -AsPlainText -Force
 
@@ -211,7 +157,7 @@ jobs:
           # Bring up Tailscale with the provided auth key and set a unique hostname
 
 
-          & "$env:ProgramFiles\Tailscale\tailscale.exe" up --authkey=${{ secrets.TAILSCALE_AUTH_KEY }} --hostname=gh-runner-$env:GITHUB_RUN_ID
+          & "$env:ProgramFiles\Tailscale\tailscale.exe" up --authkey=${{ secrets.TAILSCALE_AUTH_KEY }} --hostname=rdprunner
 
 
           
